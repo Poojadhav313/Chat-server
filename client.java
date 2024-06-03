@@ -1,32 +1,81 @@
 import java.net.*;
 import java.io.*;
-import java.util.*;
 
 public class client {
+	public Socket s;
+	
+	PrintStream ps;
+	
+	BufferedReader br;
+	
+	BufferedReader kb;
+
+	public client() throws Exception
+	{
+		s = new Socket("localhost", 8081);
+		ps = new PrintStream(s.getOutputStream());
+		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		kb = new BufferedReader(new InputStreamReader(System.in));
+	}
+	
 	public static void main(String arg[]) throws Exception
 	{
-		Socket s = new Socket("localhost", 8082);
-		//DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-    PrintStream ps = new PrintStream(s.getOutputStream());
 		
-		BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		ct1 client = new ct1();
+		ct2 server = new ct2();
 		
-		BufferedReader kb = new BufferedReader(new InputStreamReader(System.in));
+		client.start();
+		server.start();
 		
-		String str, str1;
-		while(!(str = kb.readLine()).equals("exit"))
-		{
-			//dos.writeBytes(str + "\n");
-			ps.println(str);
-      str1 = br.readLine();
-			System.out.println(str1);
-		}
-		
-		//dos.close();
-		ps.close();
-    br.close();
-		kb.close();
-		s.close();
+        
+		/*
+		 * ps.close(); br.close(); kb.close(); s.close();
+		 */
 		
 	}
 }
+	
+	
+	class ct1 extends Thread{
+		public void run()
+		{
+			try {
+				client c = new client();
+				
+				String str = c.kb.readLine();
+				
+				if (!str.equals("exit")) {
+					c.ps.println(str);
+				}
+				else {
+					return;
+				}
+			}
+			catch(Exception e)
+			{
+				System.out.println(e);
+			}
+		}
+	}
+	
+	class ct2 extends Thread{
+		public void run()
+		{
+			try {
+				client c = new client();
+				
+				String str1 = c.br.readLine();
+				
+	            if (str1 != null) {
+	                System.out.println("Server: " + str1);
+	            }
+	            else {
+	            	return;
+	            }
+			}
+			catch(Exception e)
+			{
+				System.out.println(e);
+			}
+		}
+	}

@@ -1,38 +1,84 @@
-
 import java.net.*;
 import java.io.*;
-import java.util.*;
 
 public class server {
+	public Socket s;
+	ServerSocket ss;
+	
+	PrintStream ps;
+	
+	BufferedReader br;
+	
+	BufferedReader kb;
+	
+	public server() throws Exception
+	{
+		ss = new ServerSocket(8081);
+		s = ss.accept();
+		
+		System.out.println("Connection established");
+		
+		ps = new PrintStream(s.getOutputStream());
+		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		kb = new BufferedReader(new InputStreamReader(System.in));
+	}
+	
 	public static void main(String arg[]) throws Exception
 	{
-		ServerSocket ss = new ServerSocket(8082);
-		Socket s = ss.accept();
-		System.out.println("connection established");
 		
-		BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		st1 client = new st1();
+		st2 server = new st2();
 		
-		BufferedReader kb = new BufferedReader(new InputStreamReader(System.in));
+		client.start();
+		server.start();
 		
-		PrintStream ps = new PrintStream(s.getOutputStream());
 		
-		while(true)
+			/*
+			 * ps.close(); br.close(); kb.close(); ss.close(); s.close(); System.exit(0);
+			 */
+		
+	}
+}
+
+
+class st1 extends Thread{
+	public void run(){
+		try {
+			server s = new server();
+			String str = s.br.readLine();
+			
+            if (!(str == null)) {
+            	System.out.println("Client: " + str);
+            }
+            else{
+            	return;
+            }
+		}
+		catch(Exception e)
 		{
-			String str, str1;
+			System.out.println(e);
+		}
+	}
+}
+
+class st2 extends Thread{
+	public void run(){
+		try {
+			server s =new server();
+			System.out.print("Server: ");
 			
-			while((str = br.readLine()) != null)
-			{
-				System.out.println(str);
-				str1 = kb.readLine();
-				ps.println(str1);
-			}
-			
-			ps.close();
-			br.close();
-			kb.close();
-			ss.close();
-			s.close();
-			System.exit(0);
+            String str1 = s.kb.readLine();
+            
+            if (!str1.equals("exit")) {
+            	s.ps.println(str1);
+            }
+            else {
+           	 return;
+            }
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
 		}
 	}
 }
