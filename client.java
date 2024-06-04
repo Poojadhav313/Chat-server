@@ -12,7 +12,7 @@ public class client {
 
 	public client() throws Exception
 	{
-		s = new Socket("localhost", 8081);
+		s = new Socket("192.168.1.8", 8089);
 		ps = new PrintStream(s.getOutputStream());
 		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		kb = new BufferedReader(new InputStreamReader(System.in));
@@ -20,12 +20,16 @@ public class client {
 	
 	public static void main(String arg[]) throws Exception
 	{
-		
-		ct1 client = new ct1();
-		ct2 server = new ct2();
+		client c = new client();		
+
+		ct1 client = new ct1(c);
+		ct2 server = new ct2(c);
 		
 		client.start();
 		server.start();
+
+		client.join();
+		server.join();
 		
         
 		/*
@@ -37,11 +41,16 @@ public class client {
 	
 	
 	class ct1 extends Thread{
+		client c;
+
+		public ct1(client c)
+		{
+			this.c = c;
+		}
 		public void run()
 		{
 			try {
-				client c = new client();
-				
+				System.out.print("Client: ");
 				String str = c.kb.readLine();
 				
 				if (!str.equals("exit")) {
@@ -59,10 +68,16 @@ public class client {
 	}
 	
 	class ct2 extends Thread{
+
+		client c;
+
+		public ct2(client c)
+		{
+			this.c = c;
+		}
 		public void run()
 		{
 			try {
-				client c = new client();
 				
 				String str1 = c.br.readLine();
 				

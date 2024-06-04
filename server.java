@@ -13,7 +13,7 @@ public class server {
 	
 	public server() throws Exception
 	{
-		ss = new ServerSocket(8081);
+		ss = new ServerSocket(8089);
 		s = ss.accept();
 		
 		System.out.println("Connection established");
@@ -25,12 +25,15 @@ public class server {
 	
 	public static void main(String arg[]) throws Exception
 	{
-		
-		st1 client = new st1();
-		st2 server = new st2();
+		server s = new server();
+		st1 client = new st1(s);
+		st2 server = new st2(s);
 		
 		client.start();
 		server.start();
+
+		client.join();
+		server.join();
 		
 		
 			/*
@@ -42,9 +45,14 @@ public class server {
 
 
 class st1 extends Thread{
+	server s;
+
+		public st1(server s)
+		{
+			this.s = s;
+		}
 	public void run(){
 		try {
-			server s = new server();
 			String str = s.br.readLine();
 			
             if (!(str == null)) {
@@ -62,14 +70,21 @@ class st1 extends Thread{
 }
 
 class st2 extends Thread{
-	public void run(){
+
+		server s;
+
+		public st2(server s)
+		{
+			this.s = s;
+		}
+		public void run(){
 		try {
-			server s =new server();
-			System.out.print("Server: ");
+			
 			
             String str1 = s.kb.readLine();
             
             if (!str1.equals("exit")) {
+		System.out.print("Server: ");
             	s.ps.println(str1);
             }
             else {
