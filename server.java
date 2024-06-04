@@ -34,12 +34,19 @@ public class server {
 
 		client.join();
 		server.join();
+
+		System.out.println("ending server");
+		
 		
 		
 			/*
 			 * ps.close(); br.close(); kb.close(); ss.close(); s.close(); System.exit(0);
 			 */
 		
+	}
+	public void cleanup() throws Exception
+	{
+		ps.close(); br.close(); kb.close(); s.close(); ss.close();
 	}
 }
 
@@ -52,20 +59,26 @@ class st1 extends Thread{
 			this.s = s;
 		}
 	public void run(){
+		while(true)
+		{
 		try {
 			String str = s.br.readLine();
 			
-            if (!(str == null)) {
+            if (!(str.equals("exit"))) {
             	System.out.println("Client: " + str);
             }
             else{
-            	return;
+		
+		System.exit(0);
+		s.cleanup();
+
             }
 		}
 		catch(Exception e)
 		{
 			System.out.println(e);
 		}
+	}
 	}
 }
 
@@ -78,22 +91,25 @@ class st2 extends Thread{
 			this.s = s;
 		}
 		public void run(){
+		while(true)
+		{
 		try {
 			
 			
             String str1 = s.kb.readLine();
             
-            if (!str1.equals("exit")) {
-		System.out.print("Server: ");
+            //if (!str1.equals("exit")) {
+		//////////////System.out.print("Server: ");
             	s.ps.println(str1);
-            }
-            else {
-           	 return;
-            }
+            //}
+            //else {
+            //return;
+          // }
 		}
 		catch(Exception e)
 		{
 			System.out.println(e);
 		}
+	}
 	}
 }

@@ -12,7 +12,7 @@ public class client {
 
 	public client() throws Exception
 	{
-		s = new Socket("192.168.1.8", 8089);
+		s = new Socket("localhost", 8089);
 		ps = new PrintStream(s.getOutputStream());
 		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		kb = new BufferedReader(new InputStreamReader(System.in));
@@ -30,12 +30,19 @@ public class client {
 
 		client.join();
 		server.join();
+
+System.out.println("ending client");
+
 		
         
 		/*
 		 * ps.close(); br.close(); kb.close(); s.close();
 		 */
 		
+	}
+	public void cleanup() throws Exception
+	{
+		ps.close(); br.close(); kb.close(); s.close();
 	}
 }
 	
@@ -49,21 +56,27 @@ public class client {
 		}
 		public void run()
 		{
+			while(true)
+		{
 			try {
-				System.out.print("Client: ");
+				/////////////System.out.print("Client: ");
 				String str = c.kb.readLine();
 				
 				if (!str.equals("exit")) {
 					c.ps.println(str);
 				}
 				else {
-					return;
+					c.ps.println(str);
+					System.exit(0);
+					c.cleanup();
+					
 				}
 			}
 			catch(Exception e)
 			{
 				System.out.println(e);
 			}
+		}
 		}
 	}
 	
@@ -77,20 +90,23 @@ public class client {
 		}
 		public void run()
 		{
+			while(true)
+		{
 			try {
 				
 				String str1 = c.br.readLine();
 				
-	            if (str1 != null) {
+	            //if (str1 != null) {
 	                System.out.println("Server: " + str1);
-	            }
-	            else {
-	            	return;
-	            }
+	            //}
+	            //else {
+	            //return;
+	            //}
 			}
 			catch(Exception e)
 			{
 				System.out.println(e);
 			}
 		}
+	}
 	}
